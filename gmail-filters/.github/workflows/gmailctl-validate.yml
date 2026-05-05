@@ -1,0 +1,33 @@
+name: gmailctl-validate
+
+on:
+  pull_request:
+    paths:
+      - 'gmail-filters/**'
+  push:
+    branches: [main]
+    paths:
+      - 'gmail-filters/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gmail-filters
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install gmailctl
+        run: go install github.com/mbrt/gmailctl/cmd/gmailctl@latest
+
+      - name: Validate config compiles
+        run: gmailctl debug --config=config.jsonnet > /dev/null
+
+      - name: Run filter tests
+        run: gmailctl test --config=config.jsonnet

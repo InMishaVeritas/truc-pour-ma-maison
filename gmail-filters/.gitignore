@@ -1,0 +1,15 @@
+# gmailctl local credentials (never commit!)
+.gmailctl/
+credentials.json
+token.json
+
+# Local backups can stay or go — your call. Keeping them excluded by default
+# since they contain a snapshot of all your filters and labels.
+backups/
+*.backup.jsonnet
+
+# Editor cruft
+.DS_Store
+*.swp
+.idea/
+.vscode/
