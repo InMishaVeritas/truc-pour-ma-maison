@@ -1,0 +1,24 @@
+---
+services:
+  plex:
+    image: ghcr.io/linuxserver/plex:latest
+    container_name: PlexHW
+    restart: unless-stopped
+    network_mode: host
+
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=Europe/Paris
+      - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIM}
+    volumes:
+      - ${DATA_ROOT}/plexhw:/config
+      - /volume2/mouvies:/movies:ro
+
+
+    # Hardware transcoding via Intel QuickSync (N100 iGPU).
+    # Uncomment to enable. Requires the host to expose /dev/dri.
+    # devices:
+    #   - /dev/dri:/dev/dri
+
