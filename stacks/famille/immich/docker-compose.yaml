@@ -11,7 +11,7 @@ services:
       - "2283:2283"
     volumes:
       - ${DATA_ROOT}/immich/upload:/data
-      # External library (existing photos), read-only:
+      - /volume2/photo_anh:/external/photo_anh:ro
       - /volume2/photos:/external/photos:ro
       - /etc/localtime:/etc/localtime:ro
     environment:
