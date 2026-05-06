@@ -1,0 +1,13 @@
+services:
+  adguardhome:
+    image: adguard/adguardhome:v0.107.74
+    container_name: adguard
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - adguard_work:/opt/adguardhome/work
+      - adguard_conf:/opt/adguardhome/conf
+
+volumes:
+  adguard_work:
+  adguard_conf:
