@@ -1,0 +1,23 @@
+name: Deploy AdGuard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'stacks/infra/adguard/**'
+      - '.github/workflows/deploy-adguard.yml'
+      - '.github/workflows/_deploy-stack.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-stack.yml
+    with:
+      stack_name: infra/adguard
+    secrets:
+      ts_oauth_client_id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+      ts_oauth_secret: ${{ secrets.TS_OAUTH_SECRET }}
+      template_secrets: |
+        {
+          "ADGUARD_ADMIN_PASSWORD_HASH": "${{ secrets.ADGUARD_ADMIN_PASSWORD_HASH }}"
+        }

@@ -1,1 +1,4 @@
 .idea
+.DS_Store
+stacks/**/conf
+stacks/**/*.rendered.yaml
