@@ -104,14 +104,15 @@ filters:
 whitelist_filters: []
 user_rules: []
 dhcp:
-  enabled: false
-  interfaces: []
+  enabled: true
+  interfaces:
+    - eth0
   local_domain_name: lan
   dhcpv4:
-    gateway_ip: ""
-    subnet_mask: ""
-    range_start: ""
-    range_end: ""
+    gateway_ip: 192.168.1.254
+    subnet_mask: 255.255.255.0
+    range_start: 192.168.1.50
+    range_end: 192.168.1.250
     lease_duration: 86400
     icmp_timeout_msec: 1000
     options: []

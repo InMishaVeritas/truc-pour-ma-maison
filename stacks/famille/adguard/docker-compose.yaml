@@ -7,3 +7,5 @@ services:
     volumes:
       - /volume2/docker/adguard/conf:/opt/adguardhome/conf
       - /volume2/docker/adguard/work:/opt/adguardhome/work
+      - /etc/network/interfaces:/etc/network/interfaces:ro
+      - /etc/network/interfaces.d:/etc/network/interfaces.d:ro
