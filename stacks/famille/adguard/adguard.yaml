@@ -101,6 +101,14 @@ filters:
     url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
     name: AdGuard DNS filter
     id: 1
+  - enabled: true
+    url: https://small.oisd.nl/
+    name: OISD Small
+    id: 2
+  - enabled: true
+    url: https://phishing.army/download/phishing_army_blocklist_extended.txt
+    name: Phishing Army
+    id: 3
 whitelist_filters: []
 user_rules: []
 dhcp:
