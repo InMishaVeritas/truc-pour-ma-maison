@@ -12,6 +12,8 @@ on:
 jobs:
   deploy:
     uses: ./.github/workflows/_deploy-stack.yml
+    permissions:
+      contents: write
     with:
       stack_name: infra/adguard
     secrets:
