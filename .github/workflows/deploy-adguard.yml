@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'stacks/infra/adguard/**'
+      - '../../stacks/adguard/**'
       - '.github/workflows/deploy-adguard.yml'
       - '.github/workflows/_deploy-stack.yml'
   workflow_dispatch:

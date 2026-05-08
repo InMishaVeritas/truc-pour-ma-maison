@@ -38,3 +38,5 @@ Conf de mon nas maison
 ## Si on casse un truck
 
 ???
+
+iptables -I UG_SSH_INPUT 1 -s 100.64.0.0/10 -p tcp --dport 22 -j ACCEPT
