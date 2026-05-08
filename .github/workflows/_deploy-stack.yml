@@ -106,7 +106,7 @@ jobs:
           set -euo pipefail
 
           # Ensure remote dirs exist
-          ssh "$NAS_HOST" "mkdir -p $REMOTE_DIR/conf $REMOTE_DIR/work"
+          ssh -vvv "$NAS_HOST" "mkdir -p $REMOTE_DIR/conf $REMOTE_DIR/work"
 
           # Upload compose
           scp rendered/docker-compose.yml "$NAS_HOST:$REMOTE_DIR/"
