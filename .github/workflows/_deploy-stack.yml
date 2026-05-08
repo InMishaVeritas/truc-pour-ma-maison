@@ -109,13 +109,13 @@ jobs:
           ssh -vvv "$NAS_HOST" "mkdir -p $REMOTE_DIR/conf $REMOTE_DIR/work"
 
           # Upload compose
-          scp rendered/docker-compose.yml "$NAS_HOST:$REMOTE_DIR/"
+          scp rendered/docker-compose.yml "$NAS_HOST:docker/${{inputs.stack_name}}/"
 
           # Upload rendered configs (everything except docker-compose.yml)
           shopt -s nullglob
           for f in rendered/*.yaml rendered/*.yml; do
             [ "$(basename "$f")" = "docker-compose.yml" ] && continue
-            scp "$f" "$NAS_HOST:$REMOTE_DIR/conf/"
+            scp "$f" "$NAS_HOST:docker/${{inputs.stack_name}/conf/"
           done
 
           # Apply
