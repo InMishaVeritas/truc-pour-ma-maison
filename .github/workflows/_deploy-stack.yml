@@ -15,6 +15,8 @@ on:
         required: true
       ts_oauth_secret:
         required: true
+      nas_ssh_private_key:
+          required: true
       template_secrets:
         required: false
         description: "JSON object: template variable name -> value"
@@ -92,21 +94,26 @@ jobs:
           version: latest
           use-cache: 'true'
 
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.nas_ssh_private_key }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "StrictHostKeyChecking=accept-new" >> ~/.ssh/config
+
       - name: Deploy
         run: |
           set -euo pipefail
-          
-          # Ensure remote dir exists
-          ssh -o StrictHostKeyChecking=accept-new "$NAS_HOST" \
-            "mkdir -p $REMOTE_DIR"
+
+          # Ensure remote dirs exist
+          ssh "$NAS_HOST" "mkdir -p $REMOTE_DIR/conf $REMOTE_DIR/work"
 
           # Upload compose
           scp rendered/docker-compose.yml "$NAS_HOST:$REMOTE_DIR/"
 
-          # Upload rendered configs to conf/
+          # Upload rendered configs (everything except docker-compose.yml)
           shopt -s nullglob
-          configs=(rendered/*.yaml rendered/*.yml)
-          for f in "${configs[@]}"; do
+          for f in rendered/*.yaml rendered/*.yml; do
             [ "$(basename "$f")" = "docker-compose.yml" ] && continue
             scp "$f" "$NAS_HOST:$REMOTE_DIR/conf/"
           done
@@ -121,5 +128,6 @@ jobs:
             echo ""
             echo "- **Tag**: \`${{ steps.tag.outputs.tag }}\`"
             echo "- **Commit**: \`${GITHUB_SHA::7}\`"
+            echo "- **Source path**: \`${STACK_DIR}\`"
             echo "- **NAS path**: \`${REMOTE_DIR}\`"
           } >> $GITHUB_STEP_SUMMARY
