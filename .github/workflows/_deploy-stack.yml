@@ -115,7 +115,7 @@ jobs:
           shopt -s nullglob
           for f in rendered/*.yaml rendered/*.yml; do
             [ "$(basename "$f")" = "docker-compose.yml" ] && continue
-            scp "$f" "$NAS_HOST:docker/${{inputs.stack_name}/conf/"
+            scp "$f" "$NAS_HOST:docker/${{inputs.stack_name}}/conf/"
           done
 
           # Apply
