@@ -1,0 +1,29 @@
+---
+- name: Install k3s
+  hosts: nas
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Add Docker's official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: Install k3s
+      shell: |
+        curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION=v1.31.4+k3s1 \
+        sh -s - \
+          --cluster-init \
+          --disable=traefik \
+          --write-kubeconfig-mode=644 \
+          --tls-san=nas-maison \
+          --tls-san=100.119.18.68
