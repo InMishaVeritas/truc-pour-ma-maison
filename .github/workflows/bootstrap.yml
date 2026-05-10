@@ -1,4 +1,4 @@
-name: workflow.yml
+name: bootstrap.yml
 on:
   workflow_call:
     secrets:
