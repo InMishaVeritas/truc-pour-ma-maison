@@ -1,0 +1,45 @@
+name: workflow.yml
+on:
+  workflow_call:
+    secrets:
+      ts_oauth_client_id:
+        required: true
+      ts_oauth_secret:
+        required: true
+      nas_ssh_private_key:
+        required: true
+
+jobs:
+  infra:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      NAS_HOST: ${{ vars.NAS_SSH_USER }}@${{ vars.NAS_TAILSCALE_HOSTNAME }}
+
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.ts_oauth_client_id }}
+          oauth-secret: ${{ secrets.ts_oauth_secret }}
+          tags: tag:ci
+          version: latest
+          use-cache: 'true'
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.nas_ssh_private_key }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "StrictHostKeyChecking=accept-new" >> ~/.ssh/config
+
+      - name: Install k3s
+        run: |
+          ssh "$NAS_HOST" 'curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.31.4+k3s1 sh -s - \
+            --cluster-init \
+            --disable=traefik \
+            --write-kubeconfig-mode=644 \
+            --tls-san=nas-maison \
+            --tls-san=100.119.18.68' && 'until sudo k3s kubectl get nodes 2>/dev/null | grep -q Ready; do sleep 5; done'
+    
