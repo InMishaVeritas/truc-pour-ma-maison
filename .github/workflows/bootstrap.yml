@@ -1,6 +1,6 @@
 name: bootstrap.yml
 on:
-  workflow_call:
+  workflow_dispatch:
     secrets:
       ts_oauth_client_id:
         required: true
