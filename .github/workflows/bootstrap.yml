@@ -18,6 +18,9 @@ jobs:
       NAS_HOST: ${{ vars.NAS_SSH_USER }}@${{ vars.NAS_TAILSCALE_HOSTNAME }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v3
         with:
@@ -27,19 +30,20 @@ jobs:
           version: latest
           use-cache: 'true'
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.nas_ssh_private_key }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          echo "StrictHostKeyChecking=accept-new" >> ~/.ssh/config
+      - name: k3s setup
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ansible/bootstrap.yml
+          inventory: ansible/inventory.ini
+          key: ${{ secrets.nas_ssh_private_key }}
 
-      - name: Install k3s
+      - name: Fetch kubeconfig
+        id: kubeconfig
         run: |
-          ssh "$NAS_HOST" 'curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.31.4+k3s1 sh -s - \
-            --cluster-init \
-            --disable=traefik \
-            --write-kubeconfig-mode=644 \
-            --tls-san=nas-maison \
-            --tls-san=100.119.18.68' && 'until sudo k3s kubectl get nodes 2>/dev/null | grep -q Ready; do sleep 5; done'
-    
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} \
+            "sudo cat /etc/rancher/k3s/k3s.yaml" > kubeconfig
+          sed -i 's/127.0.0.1/nas-maison.tailb61867.ts.net/' kubeconfig
+          echo "KUBECONFIG=$PWD/kubeconfig" >> $GITHUB_ENV
+
+      - name: Test cluster
+        run: kubectl get nodes
