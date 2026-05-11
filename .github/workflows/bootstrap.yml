@@ -52,7 +52,7 @@ jobs:
         id: kubeconfig
         run: |
           mkdir -p ~/.kube
-          ssh -o StrictHostKeyChecking=no ${{ env.NAS_HOST }} \
+          ssh -o -i ~/.ssh/livreur_id_ed25519 StrictHostKeyChecking=no ${{ env.NAS_HOST }} \
             "sudo cat /etc/rancher/k3s/k3s.yaml" > ~/.kube/config
           sed -i 's/127.0.0.1/nas-maison/' ~/.kube/config
 
