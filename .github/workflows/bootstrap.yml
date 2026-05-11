@@ -21,6 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Ansible
+        run: |
+          python -m pip install ansible
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v3
         with:
@@ -37,14 +41,12 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "StrictHostKeyChecking=accept-new" >> ~/.ssh/config
 
-
-      - name: k3s setup
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: ansible/bootstrap.yml
-          inventory: ansible/inventory.ini
-          key: ${{ secrets.nas_ssh_private_key }}
-
+      - name: Run playbook
+        run: |
+          ANSIBLE_HOST_KEY_CHECKING=False \
+          ansible-playbook \
+            -i ansible/inventory.ini \
+            ansible/bootstrap.yml
 
       - name: Fetch kubeconfig
         id: kubeconfig
