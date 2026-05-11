@@ -52,7 +52,7 @@ jobs:
           mkdir -p ~/.kube
           ssh -o StrictHostKeyChecking=no ${{ env.NAS_HOST }} \
             "sudo cat /etc/rancher/k3s/k3s.yaml" > ~/.kube/config
-          sed -i 's/127.0.0.1/nas-maison.tailb61867.ts.net/' ~/.kube/config
+          sed -i 's/127.0.0.1/nas-maison/' ~/.kube/config
 
       - name: Test cluster
-        run: kubectl get nodes
+        run: kubectl get namespace
