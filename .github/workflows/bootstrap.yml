@@ -40,7 +40,7 @@ jobs:
       - name: Fetch kubeconfig
         id: kubeconfig
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} \
+          ssh -o StrictHostKeyChecking=no ${{ env.NAS_HOST }} \
             "sudo cat /etc/rancher/k3s/k3s.yaml" > kubeconfig
           sed -i 's/127.0.0.1/nas-maison.tailb61867.ts.net/' kubeconfig
           echo "KUBECONFIG=$PWD/kubeconfig" >> $GITHUB_ENV
