@@ -37,8 +37,8 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.nas_ssh_private_key }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.nas_ssh_private_key }}" > ~/.ssh/livreur_id_ed25519
+          chmod 600 ~/.ssh/livreur_id_ed25519
           echo "StrictHostKeyChecking=accept-new" >> ~/.ssh/config
 
       - name: Run playbook
