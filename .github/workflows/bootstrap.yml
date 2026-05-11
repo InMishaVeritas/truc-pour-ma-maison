@@ -30,13 +30,6 @@ jobs:
           version: latest
           use-cache: 'true'
 
-      - name: k3s setup
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: ansible/bootstrap.yml
-          inventory: ansible/inventory.ini
-          key: ${{ secrets.nas_ssh_private_key }}
-
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
@@ -44,13 +37,22 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "StrictHostKeyChecking=accept-new" >> ~/.ssh/config
 
+
+      - name: k3s setup
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ansible/bootstrap.yml
+          inventory: ansible/inventory.ini
+          key: ${{ secrets.nas_ssh_private_key }}
+
+
       - name: Fetch kubeconfig
         id: kubeconfig
         run: |
           mkdir -p ~/.kube
           ssh -o StrictHostKeyChecking=no ${{ env.NAS_HOST }} \
             "sudo cat /etc/rancher/k3s/k3s.yaml" > ~/.kube/config
-          sed -i 's/127.0.0.1/nas-maison/' ~/.kube/config
+          sed -i 's/127.0.0.1//nas-maison.tailb61867.ts.net/' ~/.kube/config
 
       - name: Test cluster
         run: kubectl get nodes
